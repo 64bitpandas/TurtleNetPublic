@@ -1,0 +1,37 @@
+version: "3"
+services:
+    front:
+        image: tombursch/kitchenowl-web:latest
+        ports:
+        - "9988:80"
+        depends_on:
+        - back
+        networks:
+        - default
+        - proxy
+        labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.kitchenowl.entrypoints=https"
+        - "traefik.http.routers.kitchenowl.rule=Host(`kitchen.t.bencuan.me`)"
+        - "traefik.http.routers.kitchenowl.tls=true"
+        - "traefik.http.routers.kitchenowl.service=kitchenowl-svc"
+        - "traefik.http.services.kitchenowl-svc.loadbalancer.server.port=80"
+    back:
+        image: tombursch/kitchenowl:latest
+        restart: unless-stopped
+        networks:
+        - default
+        ### TODO ###
+        environment:
+        - JWT_SECRET_KEY=<PASSWORD>
+        volumes:
+        - kitchenowl_data:/data
+    
+
+volumes:
+    kitchenowl_data:
+
+networks:
+    default:
+    proxy:
+      external: true

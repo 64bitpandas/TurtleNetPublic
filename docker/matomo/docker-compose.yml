@@ -1,0 +1,33 @@
+# Source: https://gist.github.com/dnburgess/65161ecbfe714b677f37ce8d0e65b2b2
+version: '3'
+
+services:
+
+  matomo:
+    image: matomo:latest
+    restart: always
+    ports:
+      - 8384:80
+    environment:
+    ### TODO ###
+      - MATOMO_DATABASE_HOST=db
+      - MATOMO_DATABASE_TABLES_PREFIX=mat_
+      - MATOMO_DATABASE_USERNAME=matomo
+      - MATOMO_DATABASE_PASSWORD=matomo
+      - MATOMO_DATABASE_DBNAME=matomo
+    volumes:
+      - ./config:/var/www/html
+    links:
+      - db:db
+
+  db:
+    image: yobasystems/alpine-mariadb:latest
+    restart: always
+    ### TODO ###
+    environment:
+      MYSQL_DATABASE: matomo
+      MYSQL_USER: matomo
+      MYSQL_PASSWORD: matomo
+      MYSQL_RANDOM_ROOT_PASSWORD: <PASSWORD>
+    volumes:
+      - ./db:/var/lib/mysql

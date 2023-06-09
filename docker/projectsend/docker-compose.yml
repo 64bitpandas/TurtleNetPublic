@@ -1,0 +1,40 @@
+---
+version: "3"
+services:
+  projectsend:
+    image: lscr.io/linuxserver/projectsend:latest
+    container_name: projectsend
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles
+      - MAX_UPLOAD=5000
+    volumes:
+      - ./config:/config
+      - ./data:/data
+    ports:
+      - 9300:80
+    restart: unless-stopped
+    depends_on:
+      - database
+    networks:
+      - projectsend-internal
+
+  database:
+    image: mariadb:10.8
+    container_name: projectsend-db
+    restart: always
+    environment:
+    ### TODO ###
+      - MARIADB_ROOT_PASSWORD=<PASSWORD>
+      - MARIADB_DATABASE=projectsend
+      - MARIADB_USER=projectsend
+      - MARIADB_PASSWORD=<PASSWORD>
+    volumes:
+      - ./db:/var/lib/mysql
+    networks:
+      - projectsend-internal
+
+networks:
+  projectsend-internal:
+  

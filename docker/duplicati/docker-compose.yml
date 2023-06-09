@@ -1,0 +1,35 @@
+version: "3"
+services:
+  duplicati:
+    image: lscr.io/linuxserver/duplicati:latest
+    container_name: duplicati
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles
+      - CLI_ARGS= #optional
+    volumes:
+      - ./config:/config
+      - /home/turtle/Sync:/sync
+      - /mnt/backup0/:/backup0
+    ports:
+      - 8200:8200
+    restart: unless-stopped
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.duplicati.entrypoints=http"
+      - "traefik.http.routers.duplicati.rule=Host(`duplicati.t.bencuan.me`)"
+      - "traefik.http.middlewares.duplicati-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.duplicati.middlewares=duplicati-https-redirect"
+      - "traefik.http.routers.duplicati-secure.entrypoints=https"
+      - "traefik.http.routers.duplicati-secure.rule=Host(`duplicati.t.bencuan.me`)"
+      - "traefik.http.routers.duplicati-secure.tls=true"
+      - "traefik.http.routers.duplicati-secure.service=duplicati"
+      - "traefik.http.services.duplicati.loadbalancer.server.port=8200"
+      - "traefik.docker.network=proxy"
+
+networks:
+  proxy:
+    external: true

@@ -1,0 +1,36 @@
+version: "3.7"
+
+services:
+  caddy:
+    image: lucaslorentz/caddy-docker-proxy:ci-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - CADDY_INGRESS_NETWORKS=caddy
+      - CADDY_DOCKER_CADDYFILE_PATH=/etc/caddy/Caddyfile
+    volumes:
+      - ./data/Caddyfile:/etc/caddy/Caddyfile
+      - ./data/site:/srv
+      - ./data/caddy_data:/data
+      - ./data/caddy_config:/config
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - caddy
+  whoami:
+    image: traefik/whoami
+    networks:
+      - caddy
+    labels:
+      caddy: ingress.bencuan.me
+      caddy.reverse_proxy: "{{upstreams 80}}"
+
+volumes:
+  caddy_data:
+    external: true
+  caddy_config:
+
+networks:
+  caddy:
+    external: true

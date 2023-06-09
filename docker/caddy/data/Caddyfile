@@ -1,0 +1,19 @@
+projects.bencuan.me {
+	reverse_proxy zulu.bencuan.me:8000
+}
+
+scrabbleserver.bencuan.me {
+    reverse_proxy zulu.bencuan.me:3000
+}
+
+blog.bencuan.me {
+    reverse_proxy zulu.bencuan.me:2368
+}
+
+dnd.bencuan.me {
+    reverse_proxy zulu.bencuan.me:9900
+}
+
+s.bencuan.me {
+    reverse_proxy zulu.bencuan.me:9100
+}

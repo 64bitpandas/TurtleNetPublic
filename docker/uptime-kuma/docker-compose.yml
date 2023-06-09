@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: uptime-kuma
+    volumes:
+      - ./data:/app/data
+    ports:
+      - 3001:3001  # <Host Port>:<Container Port>
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.uptimekuma.entrypoints=https"
+      - "traefik.http.routers.uptimekuma.rule=Host(`status.t.bencuan.me`)"
+      - "traefik.http.routers.uptimekuma.tls=true"
+      - "traefik.http.routers.uptimekuma.service=uptimekuma-svc"
+      - "traefik.http.services.uptimekuma-svc.loadbalancer.server.port=3001"
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

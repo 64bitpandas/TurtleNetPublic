@@ -1,0 +1,11 @@
+---
+version: "3"
+services:
+    planarally:
+        ports:
+          - "9900:8000"
+        image: kruptein/planarally:latest
+        restart: unless-stopped
+        volumes:
+            - "./data:/planarally/data"
+            - "./assets:/planarally/static/assets"
