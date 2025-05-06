@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  goatcounter:
+    image: 64bitpandas/goatcounter:2.5
+    restart: always
+    ports:
+      - 9880:80
+    volumes:
+      - ./data:/data
+    entrypoint: ["/usr/local/bin/goatcounter", "serve", "-listen", ":80", "-tls", "http"]
